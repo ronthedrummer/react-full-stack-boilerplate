@@ -1,7 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
+import data from './testData.json';
+//console.log(contests);
+
+import App from './components/App';
+
 ReactDOM.render(
-  React.createElement('h2',null,'Hello React!'),
+  <App contests={data.contests}/>,
   document.getElementById('root')
 );
