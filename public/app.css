@@ -1,0 +1,10 @@
+.contest-preview {
+  margin: 1em;
+  border: 1px solid #ccc; }
+  .contest-preview .category-name {
+    border-bottom: 1px solid #ccc;
+    padding: .25em .5em;
+    font-weight: bold;
+    background-color: #eee; }
+  .contest-preview .contest-name {
+    padding: .5em; }
