@@ -13,7 +13,7 @@
     });
   });
 
-  router.get('/contests/:contestId',(req,res) => {
+  router.get('/contest/:contestId',(req,res) => {
     let contest = contests[req.params.contestId];
     contest.description = 'Lorem Ipsum dolor sit amet, consecutor adipate.';
 
