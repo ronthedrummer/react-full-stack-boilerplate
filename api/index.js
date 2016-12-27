@@ -1,23 +1,71 @@
-  import express from 'express';
-  import data from '../src/testData';
+import express from 'express';
+import {MongoClient} from 'mongodb';
+import assert from 'assert';
+import config from '../config';
 
-  const router = express.Router();
-  const contests = data.contests.reduce((obj, contest) => {
-    obj[contest.id] = contest;
-    return obj;
-  }, {});
+let db;
 
-  router.get('/contests',(req,res) => {
-    res.send({
-      contests: contests
-    });
+MongoClient.connect(config.mongodbUri, (err, dbc) =>  {
+  assert.equal(null, err);
+  db = dbc;
+});
+
+const router = express.Router();
+
+router.get('/contests',(req,res) => {
+  let contests = {};
+  db.collection('contests').find({})
+  .project({
+    id: 1,
+    categoryName: 1,
+    contestName: 1
+  })
+  .each((err, contest) => {
+    assert.equal(null, err);
+    if(!contest) {
+      res.send({contests});
+      return;
+    }
+    contests[contest.id] = contest;
   });
+});
 
-  router.get('/contest/:contestId',(req,res) => {
-    let contest = contests[req.params.contestId];
-    contest.description = 'Lorem Ipsum dolor sit amet, consecutor adipate.';
+router.get('/contest/:contestId',(req,res) => {
+  db.collection('contests')
+    .findOne({id: Number(req.params.contestId)})
+    .then(contest => res.send(contest))
+    .catch(console.error);
+});
 
-    res.send(contest);
+router.get('/names',(req,res) => {
+  let names = {};
+  db.collection('names').find({})
+  .project({
+    id: 1,
+    name: 1
+  })
+  .each((err, name) => {
+    assert.equal(null, err);
+    if(!name) {
+      res.send({names});
+      return;
+    }
+    names[name.id] = name;
   });
+});
 
-  export default router;
+router.get('/names/:nameIds',(req,res) => {
+  const nameIds = req.params.nameIds.split(',').map(Number);
+  let names = {};
+  db.collection('names').find({ id: { $in: nameIds }})
+  .each((err, name) => {
+    assert.equal(null, err);
+    if(!name) {
+      res.send({names});
+      return;
+    }
+    names[name.id] = name;
+  });
+});
+
+export default router;
