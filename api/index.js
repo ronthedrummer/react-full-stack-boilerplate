@@ -66,4 +66,30 @@ router.get('/names/:nameIds',(req,res) => {
   });
 });
 
+router.post('/names', (req,res) => {
+  const contestId = ObjectID(req.body.contestId);
+  const name = req.body.newName;
+  // validation
+  // insert name
+  db.collection('names').insertOne({name}).then(result =>
+      db.collection('contests').findAndModify(
+        { _id: contestId },
+        [],
+        { $push: { nameIds: result.insertedId } },
+        { new: true }
+      ).then(doc =>
+        res.send({
+          updatedContest: doc.value,
+          newName: { _id: result.insertedId, name }
+        })
+      ).catch(error => {
+        console.error(error);
+        res.status(404).send('Bad Request');
+      })
+    );
+  // update contest & read updated information
+  // return updated data
+  //res.send(req.body);
+});
+
 export default router;

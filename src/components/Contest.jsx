@@ -4,7 +4,12 @@ class Contest extends Component {
   componentDidMount() {
     this.props.fetchNames(this.props.nameIds);
   }
-
+  handleSubmit = (event) => {
+    event.preventDefault();
+    // get the value
+    this.props.addName(this.refs.newNameInput.value, this.props._id);
+    this.refs.newNameInput.value = '';
+  }
   render() {
     return(
       <div className="contest">
@@ -37,17 +42,39 @@ class Contest extends Component {
             </ul>
           </div>
         </div>
+
+        <div className="panel panel-info">
+          <div className="panel-heading">
+            <h3 className="panel-title">Propose a New Name</h3>
+          </div>
+          <div className="panel-body">
+            <form onSubmit={this.handleSubmit}>
+              <div className="input-group">
+                <input type="text"
+                  placeholder="new name..."
+                  ref="newNameInput"
+                  className="form-control" />
+                <span className="input-group-btn">
+                  <button type="submit" className="btn btn-info">Submit</button>
+                </span>
+              </div>
+            </form>
+          </div>
+        </div>
+
       </div>
     );
   }
 }
 
 Contest.propTypes = {
+  _id: PropTypes.string.isRequired,
   description: PropTypes.string.isRequired,
   contestListClick: PropTypes.func.isRequired,
   fetchNames: PropTypes.func.isRequired,
   nameIds: PropTypes.array.isRequired,
-  lookupName: PropTypes.func.isRequired
+  lookupName: PropTypes.func.isRequired,
+  addName: PropTypes.func.isRequired,
 };
 
 export default Contest;

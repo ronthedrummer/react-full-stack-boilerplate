@@ -3,8 +3,10 @@ import apiRouter from './api';
 import express from 'express';
 import sassMiddle from 'node-sass-middleware';
 import path from 'path';
+import bodyParser from 'body-parser';
 
 const server = express();
+server.use(bodyParser.json());
 
 server.use(sassMiddle({
   src: path.join(__dirname,'styles'),

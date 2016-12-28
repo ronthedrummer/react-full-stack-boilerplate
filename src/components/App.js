@@ -27,6 +27,20 @@ class App extends React.Component {
   componentWillUnmount() {
     onPopState(null);
   }
+  addName = (newName, contestId) => {
+    api.addName(newName, contestId).then(res =>
+      this.setState({
+        contests: {
+          ...this.state.contests,
+          [res.updatedContest._id]: res.updatedContest
+        },
+        names: {
+          ...this.state.names,
+          [res.newName._id]: res.newName
+        }
+      })
+    ).catch(console.error);
+  }
   fetchContest = (contestId) => {
     pushState(
       {currentContestId: contestId},
@@ -84,6 +98,7 @@ class App extends React.Component {
   currentContent() {
     if (this.state.currentContestId) {
       return <Contest
+        addName={this.addName}
         fetchNames={this.fetchNames}
         lookupName={this.lookupName}
         contestListClick={this.fetchContestList}
